@@ -1,4 +1,5 @@
 const MOVE_SPEED=300;
+layer(['obj', 'ui'], "obj");
 
 const map=[
   '             -------------',
@@ -13,8 +14,8 @@ const map=[
 const levelCfg={
   height:30,
   width:30,
-  'X':[sprite('answer')],
-  '-':[sprite('lane')],
+  'X':[sprite('answer'),solid()],
+  '-':[sprite('lane'),solid()],
 }
 const car=add([
 sprite('car'), pos(30, height() / 2-3),
