@@ -31,36 +31,48 @@
   <script>
 
 kaboom({
-  ...{"fullscreen":true,"width":240,"height":240,"scale":2,"startScene":"main","version":"0.5.0"},
+  ...{"fullscreen":true,"width":240,"height":240,"scale":2,"startScene":"main","version":"0.5.0","clearColor":[0,0,0,1]},
   global: true,
   plugins: [ peditPlugin, asepritePlugin, kbmspritePlugin ],
 });
 loadKbmsprite("answer", "sprites/answer.kbmsprite");
+loadKbmsprite("block", "sprites/block.kbmsprite");
 loadKbmsprite("car", "sprites/car.kbmsprite");
 loadKbmsprite("lane", "sprites/lane.kbmsprite");
+loadKbmsprite("slides-left", "sprites/slides-left.kbmsprite");
+loadKbmsprite("slides-right", "sprites/slides-right.kbmsprite");
 scene("main", (args = {}) => {
 const MOVE_SPEED=300;
+layer(['obj', 'ui'], "obj");
 
 const map=[
-  '             -------------',
-  '                    X     ',
-  '             -------------',
-  '                    X     ',
-  '             -------------',
-  '                    X     ',
-  '             -------------',
-  '                    X     ',
-  '             -------------',]
+  '                          ',
+  '                          ',
+  '                          ',
+  '                          ',
+  '                          ',
+  '       X  X  X            ',
+  '       .  .  .      X     ',
+  '-------        -----------'
+  ,]
 const levelCfg={
   height:30,
   width:30,
-  'X':[sprite('answer')],
-  '-':[sprite('lane')],
+  'X':[sprite('answer'),'answer',solid()],
+  '-':[sprite('lane'),'lane',solid()],
+  '.':[sprite('block'),'block',solid()],
+  'A':[sprite('slides-right'),'slides-right',solid()],
+  'B':[sprite('slides-left'),'slides-left',solid()],
 }
 const car=add([
-sprite('car'), pos(30, height() / 2-3),
+sprite('car'),'car',pos(20,20),
   origin('center'),
-  solid()
+  solid(),
+  body(),
+  {
+    dead:false,
+    speed:200
+  }
 ])
 
 keyDown('right',()=>{
@@ -78,6 +90,20 @@ keyDown('down',()=>{
 keyDown('up',()=>{
   car.move(0,-MOVE_SPEED)
 })
+
+
+collides('car', 'answer', (c,a) => {
+    camShake(2);
+    destroy(a);
+    }
+)
+
+action('car', (s) => {
+  if (s.pos.y >= (height())) {
+    go('main')
+  }
+})
+
 addLevel(map,levelCfg)
 });
 start("main");
