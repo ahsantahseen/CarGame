@@ -2,21 +2,32 @@ const MOVE_SPEED=300;
 layer(['obj', 'ui'], "obj");
 
 const map=[
+  [
   '                          ',
   '                          ',
   '                          ',
   '                          ',
   '                          ',
   '       X  X  X            ',
-  '       .  .  .      X     ',
-  '-------        -----------'
-  ,]
+  '       .  .  .      N     ',
+  '-------        -----------'],
+  [
+  '                         ',
+  '                         ',
+  '                         ',
+  '                         ',
+  '                         ',
+  '         X  X            ',
+  '         .  .      N     ',
+  '-------       -----------']
+  ]
 const levelCfg={
   height:30,
   width:30,
   'X':[sprite('answer'),'answer',solid()],
   '-':[sprite('lane'),'lane',solid()],
   '.':[sprite('block'),'block',solid()],
+  'N':[sprite('next'),'next',solid()],
   'A':[sprite('slides-right'),'slides-right',solid()],
   'B':[sprite('slides-left'),'slides-left',solid()],
 }
@@ -61,16 +72,23 @@ keyDown('up',()=>{
   car.move(0,-MOVE_SPEED)
 })
 
+const levelIndex = args.level ?? 0; 
+const gameLevel = addLevel(map[levelIndex], levelCfg);
 
 collides('car', 'answer', (c,a) => {
     camShake(2);
     destroy(a);
     score.value++;
   score.text = score.value;
-  if (score.value%4===0) {
-    go('main', { score: score.value })
+} 
+)
+
+collides('car','next',(c,n)=>{
+  camShake(5);
+    go('main', { 
+    level: (levelIndex + 1) % map.length,
+    score: score.value })
   }
-    }
 )
 
 action('car', (s) => {
@@ -78,5 +96,3 @@ action('car', (s) => {
     go('main')
   }
 })
-
-addLevel(map,levelCfg)
