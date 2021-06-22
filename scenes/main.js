@@ -31,6 +31,16 @@ sprite('car'),'car',pos(20,20),
   }
 ])
 
+let score = add([
+  text('0'),
+  pos(2, 2),
+  scale(4),
+  layer('ui'),
+  {
+    value: 0
+  }
+])
+
 keyDown('right',()=>{
   car.move(MOVE_SPEED,0)
 })
@@ -51,6 +61,11 @@ keyDown('up',()=>{
 collides('car', 'answer', (c,a) => {
     camShake(2);
     destroy(a);
+    score.value++;
+  score.text = score.value;
+  if (score.value == 4) {
+    go('main')
+  }
     }
 )
 
