@@ -31,13 +31,17 @@ sprite('car'),'car',pos(20,20),
   }
 ])
 
+let valueOfScore=args.score
+if(args.score==undefined){
+  valueOfScore=0;
+}
 let score = add([
-  text('0'),
-  pos(2, 2),
+  text(valueOfScore),
+  pos(20,20),
   scale(4),
   layer('ui'),
   {
-    value: 0
+    value: valueOfScore
   }
 ])
 
@@ -63,8 +67,8 @@ collides('car', 'answer', (c,a) => {
     destroy(a);
     score.value++;
   score.text = score.value;
-  if (score.value == 4) {
-    go('main')
+  if (score.value%4===0) {
+    go('main', { score: score.value })
   }
     }
 )
